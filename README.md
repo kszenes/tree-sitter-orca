@@ -1,30 +1,43 @@
+# Tree-sitter ORCA
+
+A [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar for [ORCA](https://www.faccts.de/orca/) quantum chemistry input files.
+
+ORCA is a quantum chemistry package for electronic structure calculations. This grammar parses ORCA input files (`.inp`) including simple command lines, input blocks, geometry specifications, and variable definitions.
+
 ## Installation
 
-Put into `~/.config/nvim/init.lua`:
+### PyPI
+```bash
+pip install tree-sitter-orca
+```
+
+### Neovim with nvim-treesitter
+
+Add to your `init.lua`:
 
 ```lua
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-parser_config.zimbu = {
+parser_config.orca = {
   install_info = {
-    url = "~/code/qc_lsp/tree-sitter-orca", -- local path or git repo
-    files = { "src/parser.c" }, -- note that some parsers also require src/scanner.c or src/scanner.cc
-    -- optional entries:
-    branch = "main", -- default branch in case of git repo if different from master
-    generate_requires_npm = false, -- if stand-alone parser without npm dependencies
-    requires_generate_from_grammar = false, -- if folder contains pre-generated src/parser.c
+    url = "https://github.com/kszenes/tree-sitter-orca",
+    files = { "src/parser.c" },
+    branch = "main",
   },
-  filetype = "inp", -- if filetype does not match the parser name
+  filetype = "inp",
 }
 ```
 
-This will enable the treesitter parsing.
-In order to add the syntax highlighting one needs to link it manually:
-
-```sh
-ln ~/code/qc_lsp/tree-sitter-orca/queries/highlights.scm ~/.config/nvim/queries/orca
+Create syntax highlighting:
+```bash
+mkdir -p ~/.config/nvim/queries/orca
+ln -s /path/to/tree-sitter-orca/queries/highlights.scm ~/.config/nvim/queries/orca/highlights.scm
 ```
 
+## Distribution
+
+This grammar is distributed via PyPI for Python applications and can be integrated into text editors through nvim-treesitter or similar extensions.
+
 > [!important]
-> Whenever you make changes to the grammar, you need to 
-> - regenerate: `tree-sitter generate`
-> - update in nvim: `TSUpdate orca`
+> After grammar changes:
+> - Regenerate: `tree-sitter generate`
+> - Update in editors: `TSUpdate orca` (nvim)

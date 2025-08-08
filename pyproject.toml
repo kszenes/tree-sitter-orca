@@ -15,11 +15,15 @@ classifiers = [
 ]
 authors = [{ name = "Kalman Szenes", email = "szenes.kalman@gmail.com" }]
 requires-python = ">=3.10"
-license.text = "MIT"
+license = "MIT"
 readme = "README.md"
+dependencies = [
+    "build>=1.3.0",
+    "twine>=6.1.0",
+]
 
 [project.urls]
-Homepage = "https://github.com/tree-sitter/tree-sitter-orca"
+Homepage = "https://github.com/kszenes/tree-sitter-orca"
 
 [project.optional-dependencies]
 core = ["tree-sitter~=0.24"]
