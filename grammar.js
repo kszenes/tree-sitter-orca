@@ -255,7 +255,7 @@ module.exports = grammar({
 
     comment: $ => /#.*/,
     element: $ => /[A-Za-z]{1,2}/,
-    word: $ => /[A-Za-z]+/,
+    word: $ => /[A-Za-z][A-Za-z0-9_]*/,
     string: $ => /[A-Za-z]+[A-Za-z0-9\_\-"]*/,
     quoted_string: $ => /"[A-Za-z0-9\_\-\.]*"/,
     float: $ => /(-)?[0-9]+(\.[0-9]+)?(e(-)?[0-9]+)?/,
