@@ -1,0 +1,7 @@
+error: unexpected argument '--show-expected' found
+
+  tip: a similar argument exists: '--show-fields'
+
+Usage: tree-sitter test <--include <INCLUDE>|--exclude <EXCLUDE>|--file-name <FILE_NAME>|--update|--debug|--debug-build|--debug-graph|--wasm|--open-log|--config-path <CONFIG_PATH>|--show-fields|--stat <STAT>|--rebuild|--overview-only>
+
+For more information, try '--help'.

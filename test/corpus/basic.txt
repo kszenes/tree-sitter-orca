@@ -1,0 +1,133 @@
+==================
+Simple keyword line
+==================
+
+! cc-pvdz extremescf nofrozencore
+
+---
+
+(source_file
+  (simple_line (arg) (arg) (arg)))
+
+==================
+Comment line
+==================
+
+# This is a comment
+
+---
+
+(source_file
+  (comment))
+
+==================
+Input line with quoted string
+==================
+
+%moinp "start.gbw"
+
+---
+
+(source_file
+  (input_line
+    (input_title (word))
+    (quoted_string)))
+
+==================
+Input line with float
+==================
+
+%maxcore 5000
+
+---
+
+(source_file
+  (input_line
+    (input_title (word))
+    (float)))
+
+==================
+Simple input block
+==================
+
+%casscf
+  norb 6
+  mult 3
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (float)))))))
+
+==================
+Input block with comments
+==================
+
+%casscf
+  norb 6 # this is a comment
+  mult 3
+  gtol 1e-8  #tight convergence of the gradient
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (comment)
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (float)))))
+    (comment)))
+
+==================
+Input block with array syntax
+==================
+
+%casscf mult 1,3
+        nroots 4,2
+        bweight 2,1
+        weights[0] = 0.5,0.2,0.2,0.2
+        weights[1] = 0.7,0.3
+        end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (kv_pair (input_key (word)) (value (value_atom (float)) (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (float)) (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (float)) (value_atom (float))))
+      (kv_pair (input_key (array (word) (integer))) (value (value_atom (float)) (value_atom (float)) (value_atom (float)) (value_atom (float))))
+      (kv_pair (input_key (array (word) (integer))) (value (value_atom (float)) (value_atom (float)))))))
+
+==================
+Subblock with nested content
+==================
+
+%autoci
+  citype fic-nevpt2
+  maxdiis 0
+  
+  excflags[ijab] 1
+  excflags[it] 1
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (kv_pair (input_key (word)) (value (value_atom (string))))
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (kv_pair (input_key (array (word) (string))) (value (value_atom (float))))
+      (kv_pair (input_key (array (word) (string))) (value (value_atom (float)))))))

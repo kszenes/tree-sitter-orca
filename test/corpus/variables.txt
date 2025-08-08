@@ -1,0 +1,78 @@
+==================
+Variable definition with equals
+==================
+
+%pardef
+  r = 10.2
+  angle = 90.0
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (float)))))))
+
+==================
+Variable definition with array
+==================
+
+%pardef
+  r [1.0 2.0 3.0]
+  angles [90.0 120.0]
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (variable_def (variable_name (word)) (variable_array (float) (float) (float)))
+      (variable_def (variable_name (word)) (variable_array (float) (float))))))
+
+==================
+Variable definition with semicolons
+==================
+
+%pardef
+  r = 10.2;
+  angle = 1.0, 2.0, 0.1;
+  distances [1.0 2.0];
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (float)) (value_atom (float)) (value_atom (float))))
+      (variable_def (variable_name (word)) (variable_array (float) (float))))))
+
+==================
+Mixed variable definitions
+==================
+
+%pardef
+  r = 1.5
+  angles [90.0 120.0 180.0]
+  scan = 1.0, 5.0, 0.5;
+  name = "test";
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (variable_def (variable_name (word)) (variable_array (float) (float) (float)))
+      (kv_pair (input_key (word)) (value (value_atom (float)) (value_atom (float)) (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (quoted_string)))))))
+

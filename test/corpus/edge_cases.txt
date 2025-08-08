@@ -1,0 +1,136 @@
+==================
+Empty input block
+==================
+
+%method
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))))
+
+==================
+Multiple comments
+==================
+
+# First comment
+# Second comment
+! def2-svp ccsd
+# Another comment
+
+---
+
+(source_file
+  (comment)
+  (comment)
+  (simple_line (arg) (arg))
+  (comment))
+
+==================
+Mixed whitespace handling
+==================
+
+%scf
+  maxiter    100
+	etol	1e-8
+  gtol 1e-6
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title (word))
+    (input_body
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (float))))
+      (kv_pair (input_key (word)) (value (value_atom (float)))))))
+
+==================
+Single element geometry
+==================
+
+* xyz 0 1
+  H    0.0 0.0 0.0
+*
+
+---
+
+(source_file
+  (geom_block
+    (integer)
+    (integer)
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))))
+
+==================
+Long element symbols
+==================
+
+* xyz 0 1
+  Ca   1.0 2.0 3.0
+  Br  -1.0 0.0 1.5
+*
+
+---
+
+(source_file
+  (geom_block
+    (integer)
+    (integer)
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))))
+
+
+==================
+Complex file names
+==================
+
+* xyzfile 0 1 molecule.xyz
+* gzmtfile 2 1 input.gzmt
+
+---
+
+(source_file
+  (geom_line
+    (geom_line_types)
+    (integer)
+    (integer)
+    (file))
+  (geom_line
+    (geom_line_types)
+    (integer)
+    (integer)
+    (file)))
+
+==================
+Keyword line with complex arguments
+==================
+
+! CCSD(T) cc-pVDZ Freq NoFrozenCore
+
+---
+
+(source_file
+  (simple_line (arg) (arg) (arg) (arg)))
+
+==================
+Multiple variable references in coordinates
+==================
+
+* xyz 0 1
+  C    {r} {r} {r}
+  H    {r} {r} {r}
+  O    {r} {r} {r}
+*
+
+---
+
+(source_file
+  (geom_block
+    (integer)
+    (integer)
+    (xyz_line (element) (coord_value (variable_ref (variable_name (word)))) (coord_value (variable_ref (variable_name (word)))) (coord_value (variable_ref (variable_name (word)))))
+    (xyz_line (element) (coord_value (variable_ref (variable_name (word)))) (coord_value (variable_ref (variable_name (word)))) (coord_value (variable_ref (variable_name (word)))))
+    (xyz_line (element) (coord_value (variable_ref (variable_name (word)))) (coord_value (variable_ref (variable_name (word)))) (coord_value (variable_ref (variable_name (word)))))))

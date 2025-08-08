@@ -1,0 +1,101 @@
+==================
+Simple xyz geometry block
+==================
+
+* xyz 0 1
+  C    0.0 0.0 0.0
+  C   20.0 0.0 0.0
+*
+
+---
+
+(source_file
+  (geom_block
+    (integer)
+    (integer)
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))))
+
+==================
+Xyz geometry with negative coordinates
+==================
+
+* xyz 0 1
+  H   -1.0 -2.0 3.0
+  O    0.0  1.0 0.0
+*
+
+---
+
+(source_file
+  (geom_block
+    (integer)
+    (integer)
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))))
+
+==================
+Xyz geometry with variable references
+==================
+
+* xyz 0 1
+  C    {r} 0.0 0.0
+  C   20.0 {angle} {distance}
+*
+
+---
+
+(source_file
+  (geom_block
+    (integer)
+    (integer)
+    (xyz_line (element) (coord_value (variable_ref (variable_name (word)))) (coord_value (float)) (coord_value (float)))
+    (xyz_line (element) (coord_value (float)) (coord_value (variable_ref (variable_name (word)))) (coord_value (variable_ref (variable_name (word)))))))
+
+==================
+Xyz file reference
+==================
+
+* xyzfile 0 1 molecule.xyz
+
+---
+
+(source_file
+  (geom_line
+    (geom_line_types)
+    (integer)
+    (integer)
+    (file)))
+
+==================
+Gzmt file reference
+==================
+
+* gzmtfile 0 1 molecule.gzmt
+
+---
+
+(source_file
+  (geom_line
+    (geom_line_types)
+    (integer)
+    (integer)
+    (file)))
+
+==================
+Scientific notation coordinates
+==================
+
+* xyz 0 1
+  C    1.23e-5 -2.45e-3 0.0
+  H    1.0e-10  2.0e-2  3.14159
+*
+
+---
+
+(source_file
+  (geom_block
+    (integer)
+    (integer)
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))
+    (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))))
