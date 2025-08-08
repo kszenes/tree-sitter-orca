@@ -4,6 +4,10 @@ A [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar for [ORCA](h
 
 ORCA is a quantum chemistry package for electronic structure calculations. This grammar parses ORCA input files (`.inp`) including simple command lines, input blocks, geometry specifications, and variable definitions.
 
+## Demo
+
+<img width="690" height="729" alt="SCR-20250808-ufgv" src="https://github.com/user-attachments/assets/a4dbca4a-0545-4cb6-bdcb-a1a989b401ac" />
+
 ## Installation
 
 ### PyPI
