@@ -7,15 +7,25 @@ ORCA is a quantum chemistry package for electronic structure calculations. This 
 ## Installation
 
 ### PyPI
+
 ```bash
 pip install tree-sitter-orca
 ```
 
 ### Neovim with nvim-treesitter
 
+#### Enable Parser
+
 Add to your `init.lua`:
 
 ```lua
+-- Define ORCA '*.inp' extension
+vim.filetype.add({
+	extension = {
+		inp = "inp",
+	},
+})
+-- Enable custom tree-sitter parser
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 parser_config.orca = {
   install_info = {
@@ -27,17 +37,20 @@ parser_config.orca = {
 }
 ```
 
+Install the parser in Neovim using
+
+```
+:TSUpdate orca
+```
+
+You should now be able to inspect the abstract syntax tree from within Neovim using `:TSInspect`
+
+#### Syntax Highlighting
+
 Create syntax highlighting:
+
 ```bash
 mkdir -p ~/.config/nvim/queries/orca
 ln -s /path/to/tree-sitter-orca/queries/highlights.scm ~/.config/nvim/queries/orca/highlights.scm
 ```
 
-## Distribution
-
-This grammar is distributed via PyPI for Python applications and can be integrated into text editors through nvim-treesitter or similar extensions.
-
-> [!important]
-> After grammar changes:
-> - Regenerate: `tree-sitter generate`
-> - Update in editors: `TSUpdate orca` (nvim)
