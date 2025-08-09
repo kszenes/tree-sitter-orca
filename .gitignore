@@ -48,3 +48,6 @@ zig-out/
 *.tar.gz
 *.tgz
 *.zip
+
+job.inp
+uv.lock
