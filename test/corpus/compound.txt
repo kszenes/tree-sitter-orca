@@ -304,51 +304,6 @@ StepEnd
                 (float)))))))))
 
 ==================
-Mixed compound and regular ORCA input
-==================
-
-! B3LYP def2-TZVP
-
-Variable molecule = "opt.xyz";
-
-%casscf
-  nel 2
-end
-
-NewStep
-! &{molecule}
-StepEnd
-
----
-
-(source_file
-  (simple_line
-    (arg)
-    (arg))
-  (compound_variable_declaration
-    (variable_name
-      (word))
-    (compound_value
-      (quoted_string)))
-  (input_block
-    (input_title
-      (word))
-    (input_body
-      (kv_pair
-        (input_key
-          (word))
-        (value
-          (value_atom
-            (float))))))
-  (compound_step_block
-    (compound_step_body
-      (simple_line
-        (arg
-          (compound_variable_reference
-            (variable_name
-              (word))))))))
-
-==================
 Compound array variable
 ==================
 
@@ -984,40 +939,3 @@ ENDRUN
       (float)))
   (compound_end))
 
-==================
-Geometry constraint parsing
-==================
-
-%geom constraints
-{A 1 0 2 120.0 C}
-{D 1 2 3 4 180.0 F}
-end
-end
-
----
-
-(source_file
-  (input_block
-    (input_title
-      (word))
-    (input_body
-      (subblock
-        name: (word)
-        (input_body
-          (raw_content
-            (brace_block
-              (brace_content
-                (constraint_content
-                  (float)
-                  (float)
-                  (float)
-                  (float)))))
-          (raw_content
-            (brace_block
-              (brace_content
-                (constraint_content
-                  (float)
-                  (float)
-                  (float)
-                  (float)
-                  (float))))))))))

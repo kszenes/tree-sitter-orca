@@ -99,3 +99,41 @@ Scientific notation coordinates
     (integer)
     (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))
     (xyz_line (element) (coord_value (float)) (coord_value (float)) (coord_value (float)))))
+
+==================
+Geometry constraint parsing
+==================
+
+%geom constraints
+{A 1 0 2 120.0 C}
+{D 1 2 3 4 180.0 F}
+end
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title
+      (word))
+    (input_body
+      (subblock
+        name: (word)
+        (input_body
+          (raw_content
+            (brace_block
+              (brace_content
+                (constraint_content
+                  (float)
+                  (float)
+                  (float)
+                  (float)))))
+          (raw_content
+            (brace_block
+              (brace_content
+                (constraint_content
+                  (float)
+                  (float)
+                  (float)
+                  (float)
+                  (float))))))))))
