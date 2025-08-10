@@ -8,7 +8,7 @@ In addition, it provides queries to support syntax highlighting, proper indentat
 
 ## Demo
 
-<img width="690" height="729" alt="SCR-20250808-ufgv" src="https://github.com/user-attachments/assets/a4dbca4a-0545-4cb6-bdcb-a1a989b401ac" />
+<img width="584" height="818" alt="demo" src="https://github.com/user-attachments/assets/23569c11-91f3-40c3-b7f3-c1187692b780" />
 
 ## Installation
 
