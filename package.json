@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-orca",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Parser for input file for the Orca quantum chemistry package",
   "repository": "https://github.com/kszenes/tree-sitter-orca",
   "license": "MIT",

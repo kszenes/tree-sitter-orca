@@ -3,7 +3,7 @@
 A [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar for [ORCA](https://www.faccts.de/orca/) quantum chemistry input files.
 
 ORCA is a quantum chemistry package for electronic structure calculations.
-This grammar parses ORCA input files (`.inp`) including simple command lines, input blocks, geometry specifications, and variable definitions.
+This grammar parses ORCA input files (`.inp`) including simple command lines, input blocks, geometry specifications as well as complex workflows using compound scripts.
 In addition, it provides queries to support syntax highlighting, proper indentation and code folding.
 
 ## Demo
