@@ -12,15 +12,10 @@ In addition, it provides queries to support syntax highlighting, proper indentat
 
 ## Installation
 
-### PyPI
+### Neovim with `nvim-treesitter`
 
-```bash
-pip install tree-sitter-orca
-```
-
-### Neovim with nvim-treesitter
-
-#### Enable Parser
+If you are alredy using the [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), you can configure the parser with it.
+Note that you need to also add the filetype `inp` (or any other file extension that you would like) such that the treesitter parser is activated for this non-standard file extension.
 
 Add to your `init.lua`:
 
@@ -53,10 +48,12 @@ You should now be able to inspect the abstract syntax tree from within Neovim us
 
 #### Syntax Highlighting
 
-Create syntax highlighting:
+In order to enable syntax highlighting, queries need to be provided to Treesitter to indicate which part of the code needs to be highlighted with which color.
+This is usually conveniently packaged by `nvim-treesitter`.
+Currently, I am awaiting the acceptance of my pull request to merge it to the `nvim-treesitter` repository.
+Therefore, for the time being, the file https://github.com/kszenes/tree-sitter-orca/blob/master/queries/highlights.scm needs to manually copied into your Neovim configuration:
 
 ```bash
 mkdir -p ~/.config/nvim/queries/orca
 ln -s /path/to/tree-sitter-orca/queries/highlights.scm ~/.config/nvim/queries/orca/highlights.scm
 ```
-
