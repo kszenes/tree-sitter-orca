@@ -1,0 +1,1023 @@
+==================
+Simple compound variable declaration
+==================
+
+Variable molecule = "initial.xyz";
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string))))
+
+==================
+Compound variable with integer
+==================
+
+Variable charge = 0;
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float))))
+
+==================
+Compound variable with boolean
+==================
+
+Variable DoOptimization = true;
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (compound_boolean))))
+
+==================
+Compound variable with word value
+==================
+
+Variable method = B3LYP;
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (word))))
+
+==================
+Multiple compound variables
+==================
+
+Variable molecule = "initial.xyz";
+Variable charge = 0;
+Variable mult = 1;
+Variable method = "B3LYP";
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string))))
+
+==================
+Simple NewStep block
+==================
+
+NewStep
+! B3LYP def2-TZVP
+StepEnd
+
+---
+
+(source_file
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg)
+        (arg)))))
+
+==================
+NewStep block with variable reference
+==================
+
+Variable method = "B3LYP";
+
+NewStep
+! &{method} def2-TZVP
+StepEnd
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))
+        (arg)))))
+
+==================
+NewStep with geometry file reference
+==================
+
+Variable molecule = "initial.xyz";
+Variable charge = 0;
+Variable mult = 1;
+
+NewStep
+! B3LYP def2-TZVP
+* xyzfile &{charge} &{mult} &{molecule}
+StepEnd
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg)
+        (arg))
+      (geom_line
+        (geom_line_types)
+        (compound_variable_reference
+          (variable_name
+            (word)))
+        (compound_variable_reference
+          (variable_name
+            (word)))
+        (compound_variable_reference
+          (variable_name
+            (word)))))))
+
+==================
+New_Step variant syntax
+==================
+
+Variable method = "BP86";
+
+New_Step
+! &{method} def2-SVP Opt
+Step_End
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))
+        (arg)
+        (arg)))))
+
+==================
+Multiple compound steps
+==================
+
+Variable method1 = "B3LYP";
+Variable method2 = "MP2";
+
+NewStep
+! &{method1} def2-TZVP
+StepEnd
+
+New_Step
+! &{method2} def2-QZVP
+Step_End
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))
+        (arg))))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))
+        (arg)))))
+
+==================
+Compound step with input blocks
+==================
+
+Variable method = "B3LYP";
+
+NewStep
+! &{method} def2-TZVP
+%casscf
+  nel 2
+  norb 2
+end
+StepEnd
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))
+        (arg))
+      (input_block
+        (input_title
+          (word))
+        (input_body
+          (kv_pair
+            (input_key
+              (word))
+            (value
+              (value_atom
+                (float))))
+          (kv_pair
+            (input_key
+              (word))
+            (value
+              (value_atom
+                (float)))))))))
+
+==================
+Mixed compound and regular ORCA input
+==================
+
+! B3LYP def2-TZVP
+
+Variable molecule = "opt.xyz";
+
+%casscf
+  nel 2
+end
+
+NewStep
+! &{molecule}
+StepEnd
+
+---
+
+(source_file
+  (simple_line
+    (arg)
+    (arg))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (input_block
+    (input_title
+      (word))
+    (input_body
+      (kv_pair
+        (input_key
+          (word))
+        (value
+          (value_atom
+            (float))))))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))))))
+
+==================
+Compound array variable
+==================
+
+Variable energies = [1.0, 2.0, 3.0];
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (compound_array
+        (compound_value
+          (float))
+        (compound_value
+          (float))
+        (compound_value
+          (float))))))
+
+==================
+Empty compound array
+==================
+
+Variable empty_array = [];
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (compound_array))))
+
+==================
+Compound step with geometry block
+==================
+
+Variable molecule = "geom.xyz";
+
+NewStep
+! B3LYP def2-TZVP
+* xyzfile 0 1 &{molecule}
+* int 0 1
+  c   0 0 0     0.0    0.0    0.0
+  h   1 0 0     1.0    0.0    0.0
+*
+StepEnd
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg)
+        (arg))
+      (geom_line
+        (geom_line_types)
+        (integer)
+        (integer)
+        (compound_variable_reference
+          (variable_name
+            (word))))
+      (geom_block
+        (integer)
+        (integer)
+        (int_line
+          (element)
+          connect1: (integer)
+          connect2: (integer)
+          connect3: (integer)
+          (coord_value
+            (float))
+          (coord_value
+            (float))
+          (coord_value
+            (float)))
+        (int_line
+          (element)
+          connect1: (integer)
+          connect2: (integer)
+          connect3: (integer)
+          (coord_value
+            (float))
+          (coord_value
+            (float))
+          (coord_value
+            (float)))))))
+
+==================
+Case insensitive compound keywords
+==================
+
+variable method = "B3LYP";
+Variable basis = "def2-TZVP";
+
+newstep
+! &{method} &{basis}
+stepend
+
+New_Step
+! &{method} &{basis} Opt
+Step_End
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (quoted_string)))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word)))))))
+  (compound_step_block
+    (compound_step_body
+      (simple_line
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))
+        (arg
+          (compound_variable_reference
+            (variable_name
+              (word))))
+        (arg)))))
+
+==================
+Compound array and simple declarations
+==================
+
+variable energies[21];
+Variable angle;
+variable step;
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (float))
+  (compound_variable_declaration
+    (variable_name
+      (word)))
+  (compound_variable_declaration
+    (variable_name
+      (word))))
+
+==================
+Compound assignment statements
+==================
+
+variable a = 50.0;
+step = 1.0;
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_assignment
+    (variable_name
+      (word))
+    (compound_assignment_value
+      (compound_expression
+        (compound_additive_expr
+          (compound_multiplicative_expr
+            (compound_primary_expr
+              (float))))))))
+
+==================
+Complex arithmetic expressions
+==================
+
+variable amax = 130.0;
+variable amin = 50.0;
+variable nsteps = 21;
+step = 1.0*(amax-amin)/(nsteps-1);
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_assignment
+    (variable_name
+      (word))
+    (compound_assignment_value
+      (compound_expression
+        (compound_additive_expr
+          (compound_multiplicative_expr
+            (compound_multiplicative_expr
+              (compound_multiplicative_expr
+                (compound_primary_expr
+                  (float)))
+              (compound_primary_expr
+                (compound_expression
+                  (compound_additive_expr
+                    (compound_additive_expr
+                      (compound_multiplicative_expr
+                        (compound_primary_expr
+                          (variable_name
+                            (word)))))
+                    (compound_multiplicative_expr
+                      (compound_primary_expr
+                        (variable_name
+                          (word))))))))
+            (compound_primary_expr
+              (compound_expression
+                (compound_additive_expr
+                  (compound_additive_expr
+                    (compound_multiplicative_expr
+                      (compound_primary_expr
+                        (variable_name
+                          (word)))))
+                  (compound_multiplicative_expr
+                    (compound_primary_expr
+                      (float))))))))))))
+
+==================
+Simple for loop
+==================
+
+for i from 0 to 10 do
+  x = i;
+endfor
+
+---
+
+(source_file
+  (compound_for_loop
+    (variable_name
+      (word))
+    (compound_expression
+      (compound_additive_expr
+        (compound_multiplicative_expr
+          (compound_primary_expr
+            (float)))))
+    (compound_expression
+      (compound_additive_expr
+        (compound_multiplicative_expr
+          (compound_primary_expr
+            (float)))))
+    (compound_statement
+      (compound_assignment
+        (variable_name
+          (word))
+        (compound_assignment_value
+          (compound_expression
+            (compound_additive_expr
+              (compound_multiplicative_expr
+                (compound_primary_expr
+                  (variable_name
+                    (word)))))))))))
+
+==================
+Simple if statement
+==================
+
+if (x > 0) then
+  y = 1;
+endif
+
+---
+
+(source_file
+  (compound_if_block
+    (compound_condition
+      (compound_comparison
+        (compound_expression
+          (compound_additive_expr
+            (compound_multiplicative_expr
+              (compound_primary_expr
+                (variable_name
+                  (word))))))
+        (compound_expression
+          (compound_additive_expr
+            (compound_multiplicative_expr
+              (compound_primary_expr
+                (float)))))))
+    (compound_statement
+      (compound_assignment
+        (variable_name
+          (word))
+        (compound_assignment_value
+          (compound_expression
+            (compound_additive_expr
+              (compound_multiplicative_expr
+                (compound_primary_expr
+                  (float))))))))))
+
+==================
+If-else statement
+==================
+
+if (x > 0) then
+  y = 1;
+else
+  y = 0;
+endif
+
+---
+
+(source_file
+  (compound_if_block
+    (compound_condition
+      (compound_comparison
+        (compound_expression
+          (compound_additive_expr
+            (compound_multiplicative_expr
+              (compound_primary_expr
+                (variable_name
+                  (word))))))
+        (compound_expression
+          (compound_additive_expr
+            (compound_multiplicative_expr
+              (compound_primary_expr
+                (float)))))))
+    (compound_statement
+      (compound_assignment
+        (variable_name
+          (word))
+        (compound_assignment_value
+          (compound_expression
+            (compound_additive_expr
+              (compound_multiplicative_expr
+                (compound_primary_expr
+                  (float))))))))
+    (compound_statement
+      (compound_assignment
+        (variable_name
+          (word))
+        (compound_assignment_value
+          (compound_expression
+            (compound_additive_expr
+              (compound_multiplicative_expr
+                (compound_primary_expr
+                  (float))))))))))
+
+==================
+Real compound script excerpt
+==================
+
+variable amin = 50.0;
+variable amax = 130.0;
+variable nsteps = 21;
+variable step;
+
+step = 1.0*(amax-amin)/(nsteps-1);
+
+for iang from 0 to 10 do
+  if (iang > 0) then
+    x = iang;
+  endif
+endfor
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_variable_declaration
+    (variable_name
+      (word)))
+  (compound_assignment
+    (variable_name
+      (word))
+    (compound_assignment_value
+      (compound_expression
+        (compound_additive_expr
+          (compound_multiplicative_expr
+            (compound_multiplicative_expr
+              (compound_multiplicative_expr
+                (compound_primary_expr
+                  (float)))
+              (compound_primary_expr
+                (compound_expression
+                  (compound_additive_expr
+                    (compound_additive_expr
+                      (compound_multiplicative_expr
+                        (compound_primary_expr
+                          (variable_name
+                            (word)))))
+                    (compound_multiplicative_expr
+                      (compound_primary_expr
+                        (variable_name
+                          (word))))))))
+            (compound_primary_expr
+              (compound_expression
+                (compound_additive_expr
+                  (compound_additive_expr
+                    (compound_multiplicative_expr
+                      (compound_primary_expr
+                        (variable_name
+                          (word)))))
+                  (compound_multiplicative_expr
+                    (compound_primary_expr
+                      (float)))))))))))
+  (compound_for_loop
+    (variable_name
+      (word))
+    (compound_expression
+      (compound_additive_expr
+        (compound_multiplicative_expr
+          (compound_primary_expr
+            (float)))))
+    (compound_expression
+      (compound_additive_expr
+        (compound_multiplicative_expr
+          (compound_primary_expr
+            (float)))))
+    (compound_statement
+      (compound_if_block
+        (compound_condition
+          (compound_comparison
+            (compound_expression
+              (compound_additive_expr
+                (compound_multiplicative_expr
+                  (compound_primary_expr
+                    (variable_name
+                      (word))))))
+            (compound_expression
+              (compound_additive_expr
+                (compound_multiplicative_expr
+                  (compound_primary_expr
+                    (float)))))))
+        (compound_statement
+          (compound_assignment
+            (variable_name
+              (word))
+            (compound_assignment_value
+              (compound_expression
+                (compound_additive_expr
+                  (compound_multiplicative_expr
+                    (compound_primary_expr
+                      (variable_name
+                        (word)))))))))))))
+
+==================
+Basic compound script wrapper
+==================
+
+%compound
+variable x = 10;
+end
+
+---
+
+(source_file
+  (compound_script
+    (compound_variable_declaration
+      (variable_name
+        (word))
+      (compound_value
+        (float)))))
+
+==================
+Case-insensitive compound wrapper with endrun
+==================
+
+%COMPOUND
+variable x = 10;
+ENDRUN
+
+---
+
+(source_file
+  (compound_script
+    (compound_variable_declaration
+      (variable_name
+        (word))
+      (compound_value
+        (float)))))
+
+==================
+Mixed case compound wrapper
+==================
+
+%Compound
+variable method = "B3LYP";
+NewStep
+! &{method} def2-TZVP
+StepEnd
+End
+
+---
+
+(source_file
+  (compound_script
+    (compound_variable_declaration
+      (variable_name
+        (word))
+      (compound_value
+        (quoted_string)))
+    (compound_step_block
+      (compound_step_body
+        (simple_line
+          (arg
+            (compound_variable_reference
+              (variable_name
+                (word))))
+          (arg))))))
+
+==================
+Comma-separated variable declarations
+==================
+
+variable minimum,maximum;
+variable Em,E0,Ep;
+variable i0,im,ip;
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (variable_name
+      (word)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (variable_name
+      (word))
+    (variable_name
+      (word)))
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (variable_name
+      (word))
+    (variable_name
+      (word))))
+
+==================
+Standalone compound end statement
+==================
+
+variable x = 10;
+End
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_end))
+
+==================
+Case-insensitive standalone end statements
+==================
+
+variable x = 10;
+END
+variable y = 20;
+endrun
+variable z = 30;
+ENDRUN
+
+---
+
+(source_file
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_end)
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_end)
+  (compound_variable_declaration
+    (variable_name
+      (word))
+    (compound_value
+      (float)))
+  (compound_end))
+
+==================
+Geometry constraint parsing
+==================
+
+%geom constraints
+{A 1 0 2 120.0 C}
+{D 1 2 3 4 180.0 F}
+end
+end
+
+---
+
+(source_file
+  (input_block
+    (input_title
+      (word))
+    (input_body
+      (subblock
+        name: (word)
+        (input_body
+          (raw_content
+            (brace_block
+              (brace_content
+                (constraint_content
+                  (float)
+                  (float)
+                  (float)
+                  (float)))))
+          (raw_content
+            (brace_block
+              (brace_content
+                (constraint_content
+                  (float)
+                  (float)
+                  (float)
+                  (float)
+                  (float))))))))))

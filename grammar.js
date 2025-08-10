@@ -24,7 +24,7 @@ module.exports = grammar({
 
   rules: {
     source_file: $ => repeat(
-      choice($.simple_line, $._input, $._geom)
+      choice($.simple_line, $._input, $._geom, $.compound_script, $.compound_variable_declaration, $.compound_step_block, $.compound_assignment, $.compound_array_assignment, $.compound_for_loop, $.compound_if_block, $.compound_function_call, $.compound_end)
     ),
 
     simple_line: $ => seq(
@@ -105,6 +105,231 @@ module.exports = grammar({
       "]"
     ),
 
+    // Compound script variable declarations: Variable name = value; or Variable name[size]; or Variable name1,name2,name3;
+    compound_variable_declaration: $ => choice(
+      seq(
+        /[Vv][Aa][Rr][Ii][Aa][Bb][Ll][Ee]/,
+        $.variable_name,
+        "=",
+        $.compound_value,
+        ";"
+      ),
+      seq(
+        /[Vv][Aa][Rr][Ii][Aa][Bb][Ll][Ee]/,
+        $.variable_name,
+        "[",
+        choice($.integer, $.float),
+        "]",
+        ";"
+      ),
+      seq(
+        /[Vv][Aa][Rr][Ii][Aa][Bb][Ll][Ee]/,
+        $.variable_name,
+        ";"
+      ),
+      // Multiple comma-separated variable declarations
+      seq(
+        /[Vv][Aa][Rr][Ii][Aa][Bb][Ll][Ee]/,
+        $.variable_name,
+        repeat1(seq(",", $.variable_name)),
+        ";"
+      )
+    ),
+
+    // Values that can be assigned to compound variables
+    compound_value: $ => choice(
+      $.quoted_string,    // "initial.xyz"
+      $.float,            // 1.5, -10.0
+      $.integer,          // 0, 25
+      $.word,             // method names like BP86
+      $.compound_boolean, // true/false
+      $.compound_array    // [1, 2, 3] 
+    ),
+
+    compound_boolean: $ => choice(
+      /[Tt][Rr][Uu][Ee]/, 
+      /[Ff][Aa][Ll][Ss][Ee]/
+    ),
+
+    compound_array: $ => seq(
+      "[",
+      optional(seq(
+        $.compound_value,
+        repeat(seq(",", $.compound_value))
+      )),
+      "]"
+    ),
+
+    // Compound script step blocks: NewStep ... StepEnd or New_Step ... Step_End
+    compound_step_block: $ => choice(
+      seq(
+        /[Nn][Ee][Ww][Ss][Tt][Ee][Pp]/,
+        optional($.compound_step_body),
+        /[Ss][Tt][Ee][Pp][Ee][Nn][Dd]/
+      ),
+      seq(
+        /[Nn][Ee][Ww]_[Ss][Tt][Ee][Pp]/, 
+        optional($.compound_step_body),
+        /[Ss][Tt][Ee][Pp]_[Ee][Nn][Dd]/
+      )
+    ),
+
+    // Body of a compound step - can contain regular ORCA input elements
+    compound_step_body: $ => repeat1(
+      choice(
+        $.simple_line,
+        $._input,
+        $._geom
+      )
+    ),
+
+    // Simple assignment statements: variable = value;
+    compound_assignment: $ => seq(
+      $.variable_name,
+      "=",
+      $.compound_assignment_value,
+      ";"
+    ),
+
+    // Values that can be assigned - proper arithmetic expressions
+    compound_assignment_value: $ => $.compound_expression,
+
+    // Expression handling with proper precedence
+    compound_expression: $ => choice(
+      $.compound_additive_expr
+    ),
+
+    compound_additive_expr: $ => prec.left(1, choice(
+      $.compound_multiplicative_expr,
+      seq($.compound_additive_expr, choice("+", "-"), $.compound_multiplicative_expr)
+    )),
+
+    compound_multiplicative_expr: $ => prec.left(2, choice(
+      $.compound_primary_expr,
+      seq($.compound_multiplicative_expr, choice("*", "/"), $.compound_primary_expr)
+    )),
+
+    compound_primary_expr: $ => choice(
+      $.float,
+      $.integer,
+      $.quoted_string,
+      $.compound_array_access,
+      $.variable_name,
+      seq("(", $.compound_expression, ")")
+    ),
+
+    // Array access like energies[iang] or SCF_ENERGY[jobStep]
+    compound_array_access: $ => seq(
+      $.variable_name,
+      "[",
+      $.compound_expression,
+      "]"
+    ),
+
+    // For loop: for variable from start to end do ... endfor
+    compound_for_loop: $ => seq(
+      /[Ff][Oo][Rr]/,
+      $.variable_name,
+      /[Ff][Rr][Oo][Mm]/,
+      $.compound_expression,
+      /[Tt][Oo]/,
+      $.compound_expression,
+      /[Dd][Oo]/,
+      repeat($.compound_statement),
+      /[Ee][Nn][Dd][Ff][Oo][Rr]/
+    ),
+
+    // If block: if (condition) then ... else ... endif
+    compound_if_block: $ => seq(
+      /[Ii][Ff]/,
+      "(", $.compound_condition, ")",
+      /[Tt][Hh][Ee][Nn]/,
+      repeat($.compound_statement),
+      optional(seq(
+        /[Ee][Ll][Ss][Ee]/,
+        repeat($.compound_statement)
+      )),
+      /[Ee][Nn][Dd][Ii][Ff]/
+    ),
+
+    // Statements that can appear inside for loops and if blocks
+    compound_statement: $ => choice(
+      $.compound_assignment,
+      $.compound_array_assignment,
+      $.compound_variable_declaration,
+      $.compound_step_block,
+      $.compound_if_block,
+      $.compound_for_loop,
+      $.simple_line,
+      $._input,
+      $._geom,
+      $.compound_function_call
+    ),
+
+    // Special array assignment like "Read energies[iang] = SCF_ENERGY[jobStep];"
+    compound_array_assignment: $ => seq(
+      optional(/[Rr][Ee][Aa][Dd]/),
+      $.compound_array_access,
+      "=",
+      $.compound_expression,
+      ";"
+    ),
+
+    // Conditions for if statements (simplified)
+    compound_condition: $ => choice(
+      $.compound_comparison,
+      prec.left(1, seq($.compound_condition, /[Aa][Nn][Dd]/, $.compound_condition)),
+      prec.left(0, seq($.compound_condition, /[Oo][Rr]/, $.compound_condition))
+    ),
+
+    compound_comparison: $ => seq(
+      $.compound_expression,
+      choice("<", ">", "=", "<=", ">=", "==", "!="),
+      $.compound_expression
+    ),
+
+    // Function calls like Read_Geom(), print(), etc.
+    compound_function_call: $ => seq(
+      $.variable_name,
+      "(",
+      optional($.compound_argument_list),
+      ")",
+      optional(";")
+    ),
+
+    compound_argument_list: $ => seq(
+      $.compound_expression,
+      repeat(seq(",", $.compound_expression))
+    ),
+
+    // Compound script wrapper: %compound ... end/endrun
+    compound_script: $ => seq(
+      seq("%", /[Cc][Oo][Mm][Pp][Oo][Uu][Nn][Dd]/),
+      repeat(choice(
+        $.compound_variable_declaration,
+        $.compound_step_block,
+        $.compound_assignment,
+        $.compound_array_assignment,
+        $.compound_for_loop,
+        $.compound_if_block,
+        $.compound_function_call,
+        $.simple_line,
+        $._input,
+        $._geom
+      )),
+      choice(/[Ee][Nn][Dd]/, /[Ee][Nn][Dd][Rr][Uu][Nn]/)
+    ),
+
+    // Compound variable reference like &{variable_name}
+    compound_variable_reference: $ => seq(
+      "&{",
+      $.variable_name,
+      "}"
+    ),
+
+    // Standalone compound end statement
+    compound_end: $ => choice(/[Ee][Nn][Dd]/, /[Ee][Nn][Dd][Rr][Uu][Nn]/),
+
     // Value can be a comma-separated list of atoms
     value: $ => seq(
       $.value_atom,
@@ -118,6 +343,7 @@ module.exports = grammar({
       $.quoted_string,
       $.array,
       $.brace_block,
+      $.compound_variable_reference,
       $.string,
       $.word  // Allow simple words as values too
     ),
@@ -141,7 +367,11 @@ module.exports = grammar({
     ),
 
     geom_line: $ => seq(
-      "*", $.geom_line_types, $.integer, $.integer, $.file, "\n"
+      "*", $.geom_line_types, 
+      choice($.integer, $.compound_variable_reference), 
+      choice($.integer, $.compound_variable_reference), 
+      choice($.file, $.compound_variable_reference), 
+      "\n"
     ),
 
     geom_block: $ => choice(
@@ -217,7 +447,8 @@ module.exports = grammar({
     // Coordinate values can be floats or variable references
     coord_value: $ => choice(
       $.float,
-      $.variable_ref
+      $.variable_ref,
+      $.compound_variable_reference
     ),
 
     // Variable reference like {r}
@@ -238,16 +469,32 @@ module.exports = grammar({
       "}"
     ),
 
-    // Content inside braces - numbers separated by optional commas
-    brace_content: $ => seq(
-      $.brace_value,
-      repeat(seq(optional(","), $.brace_value))
+    // Content inside braces - can be numeric values or constraints
+    brace_content: $ => choice(
+      // Regular comma-separated numeric values
+      seq(
+        $.brace_value,
+        repeat(seq(optional(","), $.brace_value))
+      ),
+      // Single constraint like "A 1 0 2 &{angle} C"
+      $.constraint_content
     ),
 
-    // Values that can appear inside braces
+    // Values that can appear inside braces (numeric only)
     brace_value: $ => choice(
       $.float,
       $.integer
+    ),
+
+    // Constraint content like "A 1 0 2 &{angle} C"
+    constraint_content: $ => seq(
+      choice("A", "B", "D", "T"),  // Common constraint types
+      repeat1(choice(
+        $.integer,
+        $.float,
+        $.compound_variable_reference
+      )),
+      optional(choice("C", "S", "F"))  // Constraint flags
     ),
 
     // Raw content for subblocks that contain only brace blocks
@@ -257,12 +504,15 @@ module.exports = grammar({
     element: $ => /[A-Za-z]{1,2}/,
     word: $ => /[A-Za-z][A-Za-z0-9_]*/,
     string: $ => /[A-Za-z]+[A-Za-z0-9\_\-"]*/,
-    quoted_string: $ => /"[A-Za-z0-9\_\-\.]*"/,
+    quoted_string: $ => /"[^"]*"/,
     float: $ => /(-)?[0-9]+(\.[0-9]+)?(e(-)?[0-9]+)?/,
     integer: $ => /[0-9\-]+/,
     file: $ => /[A-Za-z0-9\.]+/,
 
-    arg: $ => /[A-Za-z0-9\-\(\)]+/
+    arg: $ => choice(
+      /[A-Za-z0-9\-\(\)]+/,
+      $.compound_variable_reference
+    )
 
   }
 });
