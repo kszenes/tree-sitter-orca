@@ -57,3 +57,7 @@ Therefore, for the time being, the file https://github.com/kszenes/tree-sitter-o
 mkdir -p ~/.config/nvim/queries/orca
 cp /path/to/tree-sitter-orca/queries/highlights.scm ~/.config/nvim/queries/orca/highlights.scm
 ```
+
+## Similar Projects
+
+For people using Visual Studio Code, there is an extension for getting syntax highlighting within VS Code: https://github.com/JensKrumsieck/orca-input-file
