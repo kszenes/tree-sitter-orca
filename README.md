@@ -55,5 +55,5 @@ Therefore, for the time being, the file https://github.com/kszenes/tree-sitter-o
 
 ```bash
 mkdir -p ~/.config/nvim/queries/orca
-ln -s /path/to/tree-sitter-orca/queries/highlights.scm ~/.config/nvim/queries/orca/highlights.scm
+cp /path/to/tree-sitter-orca/queries/highlights.scm ~/.config/nvim/queries/orca/highlights.scm
 ```
